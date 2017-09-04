@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router';
 
 class App extends React.Component {
-    const { children } = this.prop
     render() {
+        const { children } = this.props;
         return (
             <div className="main-app">
                 <header className="main-header">

@@ -1,29 +1,33 @@
-import { Component } from 'react';
-import { browserHistory as history } from 'react-router';
+import React, { Component } from 'react';
+import { Redirect } from 'react-router'
 
-class Search extends Component {
+export default class Search extends Component {
     constructor(props) {
         super(props);
-
-        handleSubmit = this._handleSubmit.bind(this);
+        this.state = {
+            fireRedirect: false
+        }
     }
 
-    handleSubmit(e) {
+    handleSubmit = (e) => {
         e.preventDefault();
-        history.push(`/user/${this.refs.userInput.value}`)
+        this.setState({ fireRedirect: true })
     }
 
     render() {
+        const { fireRedirect } = this.state
+
         return (
             <div className="search-page">
                 <h2>Enter a Github Username</h2>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={this.handleSubmit}>
                     <input ref="userInput" className="search-page-input" type="text" />
                     <button className="search-page-btn">Search</button>
                 </form>
+                { fireRedirect && (
+                    <Redirect to={`/user/alice`} />
+                )}
             </div>
         );
     }
 };
-
-export default Search;

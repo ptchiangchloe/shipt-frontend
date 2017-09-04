@@ -1,20 +1,21 @@
-import './index.css';
+import './index.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import App from './components/App';
 import Search from './components/Search';
 import User from './components/User';
 
-const routes = (
-    <Router history={browserHistory}>
-        <Route path="/" component={App}>
-            <IndexRoute component={Search}/>
-            <Route path="user/:username" component={User}/>
-        </Route>
-    </Router>
-);
+const Routes = () => (
+  <Router>
+      <Switch>
+          <Route exact path="/" component={App}/>
+          <Route exact path="/search" component={Search}/>
+          <Route path="/user/:username" component={User}/>
+      </Switch>
+  </Router>
+)
 
-ReactDOM.render(routes, document.getElementById('root'));
+ReactDOM.render(<Routes />, document.getElementById('root'))
