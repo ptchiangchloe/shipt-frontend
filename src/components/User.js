@@ -18,7 +18,6 @@ export default class User extends Component {
         };
         this.userName = this.props.match.params.username
     }
-
     componentDidMount() {
         // Use Es6 fetch metho to request Github users' account API and Github users' repository API.
         const userAccountInfoURL = `https://api.github.com/users/${this.userName}`,
@@ -28,7 +27,6 @@ export default class User extends Component {
         const apiRequestForGitgubUserAccount = fetch(userAccountInfoURL)
         .then( response => {
             if(response.ok) {
-                console.log(response);
                 return response.json();
             }
         });
@@ -39,7 +37,6 @@ export default class User extends Component {
         })
         .then( response => {
             if(response.ok) {
-                console.log(response);
                 return response.json();
             }
         });
@@ -50,7 +47,6 @@ export default class User extends Component {
         })
         .then( response => {
             if(response.ok) {
-                console.log(response);
                 return response.json();
             }
         });
@@ -83,14 +79,12 @@ export default class User extends Component {
                     alert('Your input is not a valid username, please Re-enter a Github username.'),
                     history.push(`/search`)
                 } else {
-                    console.log(`userAccountInfo is ${userAccountInfo}`);
                     this.setState({
                         user: userAccountInfo,
                         repos: userRepoInfo,
                         followers: userFollowersInfo
                     })
                 }
-                console.log(this.state.followers);
             }
         )
     }
@@ -99,21 +93,15 @@ export default class User extends Component {
         const thePageRequesting = this.state.repoPage + 1,
               thePageRequestingURL = `https://api.github.com/users/${this.userName}
                   /repos?page=${thePageRequesting}&per_page=30`;
-        console.log(thePageRequesting);
 
         fetch(thePageRequestingURL)
         .then( response => {
             if(response.ok) {
-                console.log('response 2 addition ok');
                 return response.json();
             }
         })
         .then( jsonData => {
-            console.log(jsonData.length);
-
             const currentRepo = this.state.repos.concat(jsonData)
-            console.log(currentRepo);
-
             if (jsonData.length < 30) {
                 this.setState({
                     repos: currentRepo,
@@ -121,12 +109,10 @@ export default class User extends Component {
                     DisplayAllRepoItems: true
                 })
             } else {
-                console.log(thePageRequesting);
                 this.setState({
                     repos: currentRepo,
                     repoPage: thePageRequesting
                 })
-                console.log(this.state.repoPage);
             }
         })
     }
@@ -139,15 +125,12 @@ export default class User extends Component {
         fetch(thePageRequestingURL)
         .then( response => {
             if(response.ok) {
-                console.log('response 3 addition ok');
                 return response.json();
             }
         })
         .then( jsonData => {
-            console.log(jsonData.length);
 
             const currentFollower = this.state.followers.concat(jsonData)
-            console.log(currentFollower);
 
             if (jsonData.length < 30) {
                 this.setState({
@@ -211,9 +194,6 @@ export default class User extends Component {
             DisplayAllRepoItems,
             DisplayAllFollowers
         } = this.state;
-        console.log(user);
-        console.log(user.bio);
-        console.log(user.avatar_url);
         if (user.location === null){
             user.location = `Location info is not provided by ${user.login}`;
         }
