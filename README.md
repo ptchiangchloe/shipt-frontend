@@ -24,8 +24,8 @@ The reason for using React js is because it's one of the most advanced front end
 Also, React is a component oriented library which can be very scalable and customizable. Because of its component-based, React component is a function, the state is the reference to its internal situation, props is the parameter.
 
 For me, there is a lot of pleasure for writing react app. After an enough learning curve, I found very comfortable to write React because of its clean syntax, light API, and very stable component.
-
 <br />
+
 ### Other code
 https://github.com/ptchiangchloe/catalog_app
 
