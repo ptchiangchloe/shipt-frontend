@@ -19,7 +19,7 @@ const Routes = () => (
     <Router history={history}>
         <App>
             <Switch>
-                <Route exact path="/" component = {Search} />
+                <Route exact path={process.env.PUBLIC_URL +"/"} component = {Search} />
                 <Route exact path="/search" component = {Search}/>
                 <Route path = "/user/:username" component = {User}/>
             </Switch>
