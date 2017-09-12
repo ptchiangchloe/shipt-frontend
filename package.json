@@ -10,27 +10,50 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "css-loader": "^0.28.7",
     "history": "^4.7.2",
-    "material-ui": "^1.0.0-beta.8",
+    "material-ui": "^1.0.0-beta.9",
     "node-sass": "^4.5.3",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-flexbox-grid": "^1.1.5",
     "react-router": "^4.2.0",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "^4.2.2",
+    "rest": "^2.0.0",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2"
   },
   "devDependencies": {
+    "babel-jest": "^21.0.2",
     "babel-preset-stage-1": "^6.24.1",
-    "css-loader": "^0.28.7",
-    "sass-loader": "^6.0.6",
-    "style-loader": "^0.18.2",
+    "enzyme": "^2.9.1",
+    "eslint": "^4.6.1",
+    "eslint-plugin-react": "^7.3.0",
+    "eslint-watch": "^3.1.2",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^21.0.2",
+    "jest-fetch-mock": "^1.2.1",
+    "react-test-renderer": "^15.6.1",
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1"
   },
   "scripts": {
     "start": "npm run build",
+    "test": "jest",
     "build": "webpack -d && cp src/index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot",
-    "build:prod": "webpack -p && cp src/index.html dist/index.html"
+    "build:prod": "webpack -p && cp src/index.html dist/index.html",
+    "lint": "esw webpack.config.* src tools --color",
+    "lint:watch": "npm run lint -- --watch"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|scss)$": "identity-obj-proxy"
+    },
+    "automock": false,
+    "setupFiles": [
+      "./setupJest.js"
+    ]
   },
   "author": "Hanyu Jiang",
   "license": "MIT"

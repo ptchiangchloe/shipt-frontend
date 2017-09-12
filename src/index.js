@@ -14,8 +14,6 @@ import Search from './components/Search';
 import User from './components/User';
 import {MuiThemeProvider} from 'material-ui';
 
-import {grey, amber} from 'material-ui'
-
 // <Router> component has the ablity to pass your own history object via a prop
 const Routes = () => (
     <Router history={history}>

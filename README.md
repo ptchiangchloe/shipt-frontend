@@ -14,6 +14,18 @@ Also, React is a component oriented library which can be very scalable and custo
 
 For me, there is a lot of pleasure for writing react app. After an enough learning curve, I found very comfortable to write react because of its clean syntax, light API, and very stable component.
 
+#### Service Worker, Caching and Offline First
+On a slow connection, the browser will get data on the screen a whole lot faster with the serve cached solution.
+
+On the offline mode, the browser will deliver stuff rather than a black screen.
+
+- Unobtrusive app updates.
+- Get the user onto the latest version.
+- Continually update cache of posts.
+- Cache photos.
+- Cache avatars. 
+
+
 ### Other code
 https://github.com/ptchiangchloe/catalog_app
 

@@ -5,13 +5,16 @@ let DIST_DIR = path.resolve(__dirname, "dist");
 let SRC_DIR = path.resolve(__dirname, "src");
 
 let config = {
+    devtool: 'eval',
     entry: ['babel-polyfill', SRC_DIR + "/index.js"],
+    target: 'web',
     output: {
         path: DIST_DIR,
         filename: "bundle.js",
         publicPath: '/'
     },
-    devtool: 'inline-source-map',
+    // devtool: 'inline-source-map',
+    devtool: 'cheap-module-source-map',
     module: {
         loaders: [{
                 test: /\.js$/,
@@ -36,7 +39,14 @@ let config = {
     },
     devServer: {
         historyApiFallback: true,
-    }
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env': {
+          'NODE_ENV': JSON.stringify('production')
+        }
+      })
+    ]
 };
 
 module.exports = config;

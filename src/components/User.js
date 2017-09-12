@@ -5,42 +5,52 @@ import { Card, CardHeader, CardMedia, Button } from 'material-ui';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 
 export default class User extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             user: '',
-            repos: '',
-            lists: [],
-            follower: '',
-            followerLists: [],
+            repos: [],
+            followers: [],
+            followerPage: 1,
+            repoPage: 1,
             DisplayAllRepoItems: false,
             DisplayAllFollowers: false
         };
+        this.userName = this.props.match.params.username
     }
 
     componentDidMount() {
         // Use Es6 fetch metho to request Github users' account API and Github users' repository API.
-        let apiRequestForGitgubUserAccountInfo = fetch(`https://api.github.com/users/${this.props.match.params.username}`)
+        const userAccountInfoURL = `https://api.github.com/users/${this.userName}`,
+              userRepoInfoURL = `https://api.github.com/users/${this.userName}/repos`,
+              userFollowerInfoURL = `https://api.github.com/users/${this.userName}/followers`;
+
+        const apiRequestForGitgubUserAccount = fetch(userAccountInfoURL)
         .then( response => {
             if(response.ok) {
-                console.log('response 1 ok');
+                console.log(response);
                 return response.json();
             }
         });
 
-        let apiRequestForGithubUserRepoInfo = fetch(`https://api.github.com/users/${this.props.match.params.username}/repos`)
+        const apiRequestForGithubUserRepo = fetch(userRepoInfoURL, {
+            method: 'GET',
+            Authorization: 'a13ee710703772b217a8de853cc5ca32ab38111d',
+        })
         .then( response => {
             if(response.ok) {
-                console.log('response 2 ok');
-
+                console.log(response);
                 return response.json();
             }
         });
 
-        let apiRequestForGithubUserFollowersInfo = fetch(`https://api.github.com/users/${this.props.match.params.username}/followers`)
+        const apiRequestForGithubUserFollower = fetch(userFollowerInfoURL, {
+            method: 'GET',
+            Authorization: 'a13ee710703772b217a8de853cc5ca32ab38111d',
+        })
         .then( response => {
             if(response.ok) {
-                console.log('response 3 ok');
+                console.log(response);
                 return response.json();
             }
         });
@@ -48,29 +58,26 @@ export default class User extends Component {
         let combinedData = {
             "GithubUserAccountInfo":{},
             "GithubUserRepoInfo": {},
-            "GithubUserFollowersInfo": {}
+            "GithubUserFollowerInfo": {}
         };
 
         Promise.all([
-            apiRequestForGitgubUserAccountInfo,
-            apiRequestForGithubUserRepoInfo,
-            apiRequestForGithubUserFollowersInfo
-        ], {
-          'Authorization': 'a8cf0cb26a4371090de0758e7c42cce41e254aad',
-        })
+            apiRequestForGitgubUserAccount,
+            apiRequestForGithubUserRepo,
+            apiRequestForGithubUserFollower
+        ])
         .then(
             values => {
                 combinedData["GithubUserAccountInfo"] = values[0];
                 combinedData["GitbubUserRepoInfo"] = values[1];
-                combinedData["GitbubUserFollowersInfo"] = values[2];
-
+                combinedData["GitbubUserFollowerInfo"] = values[2];
                 return combinedData;
             }
         ).then(
             combinedData => {
                 const userAccountInfo = combinedData["GithubUserAccountInfo"],
                       userRepoInfo = combinedData["GitbubUserRepoInfo"],
-                      userFollowersInfo = combinedData["GitbubUserFollowersInfo"];
+                      userFollowersInfo = combinedData["GitbubUserFollowerInfo"];
 
                 if(userAccountInfo === undefined){
                     alert('Your input is not a valid username, please Re-enter a Github username.'),
@@ -80,63 +87,98 @@ export default class User extends Component {
                     this.setState({
                         user: userAccountInfo,
                         repos: userRepoInfo,
-                        follower: userFollowersInfo
+                        followers: userFollowersInfo
                     })
                 }
-                this.setState({
-                    lists: this.state.repos.slice(0,10),
-                    followerLists: this.state.follower.slice(0, 10)
-                })
-                console.log(this.state.lists);
-                console.log(this.state.followerLists);
-
+                console.log(this.state.followers);
             }
         )
     }
 
-    handleClick = (e) => {
-        let lengthOfCurrentList = this.state.lists.length;
-        let lengthOfListAfterAddMore = lengthOfCurrentList + 10;
+    _loadMoreRepoItems = (e) => {
+        const thePageRequesting = this.state.repoPage + 1,
+              thePageRequestingURL = `https://api.github.com/users/${this.userName}
+                  /repos?page=${thePageRequesting}&per_page=30`;
+        console.log(thePageRequesting);
 
-        this.setState({
-            lists: this.state.repos.slice(0, lengthOfListAfterAddMore)
+        fetch(thePageRequestingURL)
+        .then( response => {
+            if(response.ok) {
+                console.log('response 2 addition ok');
+                return response.json();
+            }
         })
+        .then( jsonData => {
+            console.log(jsonData.length);
 
-        if(this.state.lists.length === this.state.repos.length) {
-            this.setState({
-                DisplayAllRepoItems: true
-            })
-        }
+            const currentRepo = this.state.repos.concat(jsonData)
+            console.log(currentRepo);
+
+            if (jsonData.length < 30) {
+                this.setState({
+                    repos: currentRepo,
+                    repoPage: thePageRequesting,
+                    DisplayAllRepoItems: true
+                })
+            } else {
+                console.log(thePageRequesting);
+                this.setState({
+                    repos: currentRepo,
+                    repoPage: thePageRequesting
+                })
+                console.log(this.state.repoPage);
+            }
+        })
     }
 
-    handleClickForFollowerCard = (e) => {
-        let lengthOfCurrentFollowerList = this.state.followerLists.length;
-        let lengthOfFollowerListAfterAddMore = lengthOfCurrentFollowerList + 10;
+    _loadMoreFollowers = (e) => {
+        const thePageRequesting = this.state.followerPage + 1,
+              thePageRequestingURL = `https://api.github.com/users/${this.props.match.params.username}
+                  /followers?page=${thePageRequesting}&per_page=30`;
 
-        this.setState({
-            followerLists: this.state.follower.slice(0, lengthOfFollowerListAfterAddMore)
+        fetch(thePageRequestingURL)
+        .then( response => {
+            if(response.ok) {
+                console.log('response 3 addition ok');
+                return response.json();
+            }
         })
+        .then( jsonData => {
+            console.log(jsonData.length);
 
-        if(this.state.followerLists.length === this.state.follower.length) {
-            this.setState({
-                DisplayAllFollowers: true
-            })
-        }
+            const currentFollower = this.state.followers.concat(jsonData)
+            console.log(currentFollower);
+
+            if (jsonData.length < 30) {
+                this.setState({
+                    followers: currentFollower,
+                    followerPage: thePageRequesting,
+                    DisplayAllFollowers: true
+                })
+            } else {
+                this.setState({
+                    followers: currentFollower,
+                    followerPage: thePageRequesting
+                })
+            }
+        })
     }
 
-    renderList(item) {
+    _renderRepoList = (item) => {
         return (
-            <div key={item.id}>
+            <div key={item.id} className="repository-item">
                 <Row center="xs">
                     <Col lg={10}>
-                        <p>{item.full_name}</p>
+                        <Row center="xs" around="xs">
+                            {item.name}
+                        </Row>
                     </Col>
                 </Row>
             </div>
         )
     }
 
-    renderFollowerList(follower) {
+    _renderFollowerList = (follower) => {
         return (
             <div key={follower.id}>
                 <Row start="xs">
@@ -162,22 +204,19 @@ export default class User extends Component {
             return (<h1 className="text-center">LOADING...</h1 >)
         }
         // If we get to this part of ‘render’, then the user is loaded
-
         const {
             user,
-            lists,
-            followerLists,
+            repos,
+            followers,
             DisplayAllRepoItems,
-            DisplayAllFollowersItems
+            DisplayAllFollowers
         } = this.state;
         console.log(user);
         console.log(user.bio);
         console.log(user.avatar_url);
-
         if (user.location === null){
             user.location = `Location info is not provided by ${user.login}`;
         }
-
         return (
             <Grid fluid>
                 <Row center="xs">
@@ -187,7 +226,9 @@ export default class User extends Component {
                             <h1>{user.login}</h1>
                             </Row>
                             <p>Location: {user.location}</p>
-                            <div>{user.bio}</div>
+                            <Row center="xs">
+                            <Col xs={10} md={12} lg={10}>{user.bio}</Col>
+                            </Row>
                             <Row center="xs">
                                 <CardHeader
                                   avatar={
@@ -201,13 +242,17 @@ export default class User extends Component {
                         <Card>
                             <Row center="xs">
                             <h1>Followers</h1>
-                            <p className="count-number">{user.followers}</p>
-                            </Row>
-                            {followerLists.map(follower => this.renderFollowerList(follower))}
                             {
-                                !DisplayAllFollowersItems &&
-                                (<div className="dt-more-container">
-                                   <Button onClick={this.handleClickForFollowerCard}>
+                                !this.state.DisplayAllFollowers?
+                                <p className="count-number">{user.followers}</p> :
+                                <p className="count-number red">{user.followers}</p>
+                            }
+                            </Row>
+                            {followers.map(follower => this._renderFollowerList(follower))}
+                            {
+                                !DisplayAllFollowers &&
+                                (<div>
+                                   <Button onClick={this._loadMoreFollowers}>
                                        Load More
                                    </Button>
                                 </div>)
@@ -218,13 +263,17 @@ export default class User extends Component {
                         <Card className="info-card">
                             <Row center="xs">
                             <h1>Repository</h1>
-                            <p className="count-number">{user.public_repos}</p>
+                            {
+                                !this.state.DisplayAllRepoItems?
+                                <p className="count-number">{user.public_repos}</p> :
+                                <p className="count-number red">{user.public_repos}</p>
+                            }
                             </Row>
-                            {lists.map(this.renderList)}
+                            {repos.map(item => this._renderRepoList(item))}
                             {
                                 !DisplayAllRepoItems &&
                                 (<div className="dt-more-container">
-                                   <Button onClick={this.handleClick}>Load More</Button>
+                                   <Button onClick={this._loadMoreRepoItems}>Load More</Button>
                                 </div>)
                             }
                         </Card>
