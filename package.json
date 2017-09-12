@@ -42,8 +42,8 @@
   "scripts": {
     "start": "npm run build",
     "test": "jest",
-    "build": "webpack -d && cp src/index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot",
-    "build:prod": "webpack -p && cp src/index.html dist/200.html",
+    "build": "webpack -d && cp src/index.html index.html && webpack-dev-server --content-base src/ --inline --hot",
+    "build:prod": "webpack -p && cp src/index.html index.html",
     "lint": "esw webpack.config.* src tools --color",
     "lint:watch": "npm run lint -- --watch",
     "deploy" : "npm run build:prod &&gh-pages -d dist"

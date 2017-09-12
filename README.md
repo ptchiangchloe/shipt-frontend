@@ -1,5 +1,7 @@
 ## React Github API Account Lookup Web App
 
+![screenshot for readme](./readme.png)
+
 ### Challenge and Solution
 
 This is a fairly simple function app for Github API Account Lookup by entering Github user name.
@@ -23,7 +25,7 @@ On the offline mode, the browser will deliver stuff rather than a black screen.
 - Get the user onto the latest version.
 - Continually update cache of posts.
 - Cache photos.
-- Cache avatars. 
+- Cache avatars.
 
 
 ### Other code
