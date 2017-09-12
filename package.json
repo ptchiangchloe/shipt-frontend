@@ -2,6 +2,7 @@
   "name": "shipt-frontend",
   "version": "1.0.0",
   "description": "Front End Project for Github API Lookup by using a username",
+  "homepage": "https://ptchiangchloe.github.io/shipt-frontend",
   "main": "webpack.config.js",
   "dependencies": {
     "babel-core": "^6.26.0",
@@ -30,6 +31,7 @@
     "eslint": "^4.6.1",
     "eslint-plugin-react": "^7.3.0",
     "eslint-watch": "^3.1.2",
+    "gh-pages": "^1.0.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^21.0.2",
     "jest-fetch-mock": "^1.2.1",
@@ -41,9 +43,10 @@
     "start": "npm run build",
     "test": "jest",
     "build": "webpack -d && cp src/index.html dist/index.html && webpack-dev-server --content-base src/ --inline --hot",
-    "build:prod": "webpack -p && cp src/index.html dist/index.html",
+    "build:prod": "webpack -p && cp src/index.html dist/200.html",
     "lint": "esw webpack.config.* src tools --color",
-    "lint:watch": "npm run lint -- --watch"
+    "lint:watch": "npm run lint -- --watch",
+    "deploy" : "npm run build:prod &&gh-pages -d dist"
   },
   "jest": {
     "moduleNameMapper": {
